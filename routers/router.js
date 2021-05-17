@@ -4,15 +4,12 @@ const ProductRouter = require("./ProductRouter");
 
 //  /api 
 
-router.use("/", (req,res)=>{
-    res.send("api base sayfası")
-})
+
 router.use("/products", ProductRouter);
 router.use("/category", CategoryRouter);
 
-
-
-
-
+router.use("/", (req,res)=>{
+    res.send("api base sayfası")
+})
 
 module.exports = router
