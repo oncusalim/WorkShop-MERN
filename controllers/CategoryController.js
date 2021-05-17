@@ -31,7 +31,8 @@ exports.addCategory =async(req,res)=>{
 exports.getCategory =async(req,res)=>{
     try {
         const {id} = req.params;
-        const category = await Category.findOne({id})
+        console.log(id)
+        const category = await Category.findById({_id:id}) //findOne da kullanılabilir
         res.status(200).json(category)
 
     }
@@ -40,12 +41,53 @@ exports.getCategory =async(req,res)=>{
     }
     
 }
-exports.updateCategory =(req,res)=>{
+exports.updateCategory =async(req,res)=>{
+   
+        
+        const validationErr = validationResult(req)
+        if (validationErr?.errors?.length>0){
+             res.status(400).json({errors:validationErr.array()})
+        } 
+        
+        try{
+        const category = await Category.findOneAndUpdate({_id:req.body.id}, 
+            {
+                ...req.body,
+                status:"updated",
+                updatedDate: Date.now()
+            },
+            {
+                new:true,                  //options bölümü geri veri döndürüyor.
+                runValidators:true        //veritabanı ile modelin uyumunu kontrol ediyor.
+            }   
+            )
+             res.status(200).json(category)
+
+    }
+    catch(err){
+       
+        return res.status(500).json({errors:[{message: err.message}]})
+    }
+}
+exports.deleteCategory =async(req,res)=>{
+    try{
+        const category = await Category.findOneAndDelete({_id:req.params.id})
+        res.status(200).json(category)
+    }
+    catch(err){
+        return res.status(500).json({errors:[{message: err.message}]})
+    }
+    
+
+
     
 }
-exports.deleteCategory =(req,res)=>{
-    
-}
-exports.getCategories =(req,res)=>{
-    
+exports.getCategories =async(req,res)=>{
+    try{
+        const categories = await Category.find()
+        res.status(200).json(categories)
+    }
+    catch(err){
+        return res.status(500).json({errors:[{message: err.message}]})
+    }
 }
