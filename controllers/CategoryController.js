@@ -70,22 +70,49 @@ exports.updateCategory =async(req,res)=>{
     }
 }
 exports.deleteCategory =async(req,res)=>{
+    // try{
+    //     const category = await Category.findOneAndDelete({_id:req.params.id})
+    //     res.status(200).json(category)
+    // }
+    // catch(err){
+    //     return res.status(500).json({errors:[{message: err.message}]})
+    // }
     try{
-        const category = await Category.findOneAndDelete({_id:req.params.id})
-        res.status(200).json(category)
+        const category = await Category.findOneAndUpdate({_id:req.params.id}, 
+            {
+                status:"deleted",
+                deletedDate: Date.now()
+            },
+            {
+                new:true,                 
+                runValidators:true       
+            }   
+            )
+             res.status(200).json(category)
+            // res.status(200).send("Category deleted")
+
     }
     catch(err){
+       
         return res.status(500).json({errors:[{message: err.message}]})
     }
-    
-
-
     
 }
 exports.getCategories =async(req,res)=>{
     try{
-        const categories = await Category.find()
+        //deleted olmayan verileri döndürüyoruz. geri dönen veride status bilgisini istemiyorum.
+        const categories = await Category.find().where('status', /[^deleted]/).select('-status');
         res.status(200).json(categories)
+    }
+    catch(err){
+        return res.status(500).json({errors:[{message: err.message}]})
+    }
+}
+
+exports.destroyCategory = async (req,res)=>{
+    try{
+        await Category.deleteOne({_id:req.params.id})
+        res.status(200).send("Data is deleted")
     }
     catch(err){
         return res.status(500).json({errors:[{message: err.message}]})
