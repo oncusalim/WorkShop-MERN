@@ -10,6 +10,8 @@ router.post("/update", validations.productValidation, productController.updatePr
 
 router.get("/delete/:id", productController.deleteProduct);
 
+router.get("/destroy/:id", productController.destroyProduct);
+
 router.get("/", productController.getProducts);
 
 module.exports = router;

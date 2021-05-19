@@ -38,8 +38,10 @@ const ProductSchema = new mongoose.Schema({
        
     },
     categoryId:{
-        type: String
+        type: String,
+        requires:true,
+        
     }
 })
 
-exports.module = Product = mongoose.model('product', ProductSchema)
+module.exports = Product = mongoose.model('product', ProductSchema)

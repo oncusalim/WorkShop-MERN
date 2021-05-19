@@ -1,6 +1,5 @@
 const Category = require("../models/CategoryModel")
 const {validationResult} = require("express-validator");
-const { Mongoose } = require("mongoose");
 
 exports.addCategory =async(req,res)=>{
     try{
@@ -31,7 +30,6 @@ exports.addCategory =async(req,res)=>{
 exports.getCategory =async(req,res)=>{
     try {
         const {id} = req.params;
-        console.log(id)
         const category = await Category.findById({_id:id}) //findOne da kullanılabilir
         res.status(200).json(category)
 
